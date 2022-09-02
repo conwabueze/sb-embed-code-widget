@@ -78,8 +78,8 @@ function scriptScan(str){
     }
   });
 
-  //add new script to head
-  document.getElementsByTagName('body')[0].appendChild(newScript);
+  //add new script element(s) into embed-code-widget div
+  document.getElementsByTagName('embed-code-widget')[0].appendChild(newScript);
   
 }
 
