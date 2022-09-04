@@ -2,7 +2,7 @@ import React, { ReactElement } from "react";
 import { BlockAttributes } from "widget-sdk";
 import ReactHtmlParser, { processNodes, convertNodeToElement, htmlparser2 } from 'react-html-parser';
 import { Error } from "./components/Error";
-
+import uuid from 'react-uuid';
 
 /**
  * React Component
@@ -12,6 +12,9 @@ export interface EmbedCodeWidgetProps extends BlockAttributes {
 }
 
 let userHtml = "";
+let widgetId = uuid();
+console.log(widgetId);
+
 
 //reads user entered html and pulls out all script tags from them and adds them to array
 function scriptElementPull(str){
@@ -78,25 +81,43 @@ function scriptScan(str){
     }
   });
 
-  //add new script element(s) into embed-code-widget div
-  document.getElementsByTagName('embed-code-widget')[0].appendChild(newScript);
-  
+  //const uniqueDiv = document.createElement('div');
+  //uniqueDiv.id = `embed-code-widget-${widgetId}`;
+  //document.getElementById("embed-code-widget")[0].appendChild(uniqueDiv);
+
+  //grab root element, embed-code-wodget
+  const embedCodeWidgetTags = document.getElementsByTagName("embed-code-widget");  
+
+  //scan the list of embed-code-widgets to see which one does not have a div with a unique id for it class name and attach one
+  //we are adding a unique identify in order to find the correct embed-code-widget tag to append our script and elements
+  //if a user is using mutiple widgets we need to find where to append
+  const allEmbedCodeWidgets = document.getElementsByTagName("embed-code-widget");
+  for(const widget of allEmbedCodeWidgets){
+    if(widget.getElementsByClassName(`embed-code-widget-${widgetId}`).length ==0){
+      const uniqueDiv = document.createElement('div');
+      uniqueDiv.className = `embed-code-widget-${widgetId}`;
+      widget.appendChild(uniqueDiv);
+
+      //append script to unique id div
+      document.getElementsByClassName(`embed-code-widget-${widgetId}`)[0].appendChild(newScript);
+    }
+  }
 }
 
 
-
 export const EmbedCodeWidget = ({ code }: EmbedCodeWidgetProps): ReactElement => {
-
+  
+  
   if(code!==undefined){
-    scriptElementPull(code);
-
-    return <div className="embed-code-widget">
-      {ReactHtmlParser(userHtml)}
-    </div>
+    
+    return <div className={`embed-code-widget`}>
+        {scriptElementPull(code)}
+        {ReactHtmlParser(userHtml)}
+        
+      </div>
   }
   else{
-    return <div className="embed-code-widget">
-    {userHtml}
+    return <div className={`embed-code-widget`}>
   </div>
   }
   
