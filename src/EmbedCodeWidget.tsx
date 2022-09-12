@@ -102,23 +102,14 @@ function scriptScan(str){
       document.getElementsByClassName(`embed-code-widget-${widgetId}`)[0].appendChild(newScript);
     }
   }
+
+  
 }
 
 
 export const EmbedCodeWidget = ({ code }: EmbedCodeWidgetProps): ReactElement => {
-  
-  
-  if(code!==undefined){
-    
     return <div className={`embed-code-widget`}>
         {scriptElementPull(code)}
         {ReactHtmlParser(userHtml)}
-        
       </div>
-  }
-  else{
-    return <div className={`embed-code-widget`}>
-  </div>
-  }
-  
 };
